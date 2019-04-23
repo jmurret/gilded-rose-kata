@@ -1,0 +1,43 @@
+Facts
+-----------
+-All items have a sell-in value which denotes the number of days we have to sell the item
+-All items have a quality value which denotes how valuable the item is
+-At the end of each day our system lowers both values for every item
+
+Notes
+------
+- sell-in is derived from the concept of sell by
+
+Existing Requirements
+-------------
+x - Once the sell by date has passed, quality degrades twice as fast
+x - The quality of an item is never negative
+x - "Aged Brie" actually increases in quality the older it gets
+x - The quality of an item is never more than 50
+x - "Sulfuras", being a legendary item, never has to be sold or decreases in quality
+- "Backstage passes", like aged brie, increases in quality as it's sell-in value approaches; quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but quality drops to 0 after the concert
+x - "Sulfuras" is a legendary item and as such its quality is 80 and it never alters
+
+New Requirements
+----------------
+- "Conjured" items degrade in quality twice as fast as normal items
+
+
+Approach
+--------
+Note: given more time would evaluate approaching this via functional programming with immutability rather than through inheritance
+x - add tests to verify existing behavior
+x - try to create a seam to add new feature but not effect existing code
+x - add new feature using types
+- create refactored version
+- add feature flag to use old code vs new code
+-- production deployment could use feature flag targeting so only % of user base (say 5%) was exposed to entirely new code.
+    Rest would get Legacy Code + only Conjured Items Logic
+    In case of issues, featureFlag turned off entirely, so everyone gets Legacy Code + only Conjured Items Logic
+    In case of no issues, % of users with entirely new code ramped up over time until 100%. Future release would remove legacy code, feature flag logic, and legacy tests.
+
+Unfinished
+----------
+- Uncomment the commented out tests in spec doc that use the idea of Item Types.
+- Get Tests to pass / Finish commented out Inherited Types on lines 30 - 40
+- Uncomment feature flag code on lines 91, 94 - 96
