@@ -129,3 +129,88 @@ function update_quality(featureFlagUseItemTypes = false) {
     }
   }
 }
+
+//------ FUNCTIONAL ---------//
+const updateQuality = (items) => {
+  return items.map(x => {
+    const updateFunc = updateFuncFactory(x)
+    return updateFunc(x);
+  });
+};
+
+const updateFuncFactory = item => {
+  const {name} = item;
+  switch (name) {
+    case 'Sulfuras, Hand of Ragnaros':
+      return updateSulfurasItem;
+      break;
+    case 'Aged Brie':
+      return updateAgedBrieItem;
+      break;
+    case 'Backstage passes to a TAFKAL80ETC concert':
+      return updateBackstagePassItem;
+      break;
+    case 'Conjured':
+      return updateConjuredItem;
+      break;
+    default:
+      return updateNormalItem;
+  }
+}
+
+const updateNormalItem = (item) => {
+  const _maxQuality = 50;
+  const _getQuality = (quality, sell_in) => {
+    if (quality > 0 && quality < _maxQuality) {
+      const calculatedQuality = sell_in <= 0 ? quality - 2 : quality - 1;
+      return calculatedQuality > 0 ? calculatedQuality : 0;
+    }
+    return quality;
+  };
+  return new Item(item.name, item.sell_in - 1, _getQuality(item.quality, item.sell_in));
+};
+
+const updateSulfurasItem = (item) => {
+  return new Item(item.name, item.sell_in, 80);
+};
+
+const updateBackstagePassItem = (item) => {
+  const _maxQuality = 50;
+  const _getQuality = (quality, sell_in) => {
+    if (sell_in <= 0) {
+      return 0;
+    } else if (sell_in >= 1 && sell_in <= 5){
+      return quality + 3 < _maxQuality ? quality + 3 : _maxQuality;
+    } else if (sell_in >= 6 && sell_in <= 10){
+      return quality + 2 < _maxQuality ? quality + 2 : _maxQuality;
+    } else {
+      return quality + 1 < _maxQuality ? quality + 1 : _maxQuality;
+    }
+    return quality < _maxQuality ? quality : _maxQuality;
+  };
+  return new Item(item.name, item.sell_in - 1, _getQuality(item.quality, item.sell_in));
+};
+
+const updateAgedBrieItem = (item) => {
+  const _maxQuality = 50;
+  const _getQuality = (quality, sell_in) => {
+    if (quality > 0 && quality < _maxQuality) {
+      const calculatedQuality = sell_in <= 0 ? quality + 2 : quality + 1;
+      return calculatedQuality < _maxQuality ? calculatedQuality : _maxQuality;
+    }
+    return quality;
+  };
+  return new Item(item.name, item.sell_in - 1, _getQuality(item.quality, item.sell_in));
+};
+
+const updateConjuredItem = (item) => {
+  const _maxQuality = 50;
+  const _getQuality = (quality, sell_in) => {
+    if (quality > 0 && quality < _maxQuality) {
+      const calculatedQuality = sell_in <= 0 ? quality - 4 : quality - 2;
+      return calculatedQuality > 0 ? calculatedQuality : 0;
+    }
+    return quality;
+  };
+  return new Item(item.name, item.sell_in - 1, _getQuality(item.quality, item.sell_in));
+};
